@@ -22,29 +22,29 @@ def test_qudit_state_and_unitary_transform_equivalence(qudit_dim, num_qudits):
         expected_product = np.matmul(random_unitary, random_state)
         # Qubit space representation of the qudit state vector.
         transformed_state = qudit_state_transform.qudit_to_qubit_state(
-            qudit_dim, num_qudits, random_state
+            random_state, (qudit_dim,) * num_qudits
         )
         # Qubit space representation of the qudit unitary. Alternate between memoizing or not.
         transformed_unitary = qudit_state_transform.qudit_to_qubit_unitary(
-            qudit_dim, num_qudits, random_unitary, memoize=(i % 2)
+            random_unitary, (qudit_dim,) * num_qudits, memoize=True
         )
         # Apply the transformed unitary on the transformed state vector.
         transformed_product = np.matmul(transformed_unitary, transformed_state)
         # Convert the transformed product back to the qudit space.
         product_in_qudit_space = qudit_state_transform.qubit_to_qudit_state(
-            qudit_dim, num_qudits, transformed_product
+            transformed_product, (qudit_dim,) * num_qudits
         )
         # Assert that the transform back from qubit space is the inverse of the transform to qubit
         # space.
         np.testing.assert_allclose(
             qudit_state_transform.qubit_to_qudit_state(
-                qudit_dim, num_qudits, transformed_state
+                transformed_state, (qudit_dim,) * num_qudits
             ),
             random_state,
         )
         np.testing.assert_allclose(
             qudit_state_transform.qubit_to_qudit_unitary(
-                qudit_dim, num_qudits, transformed_unitary
+                transformed_unitary, (qudit_dim,) * num_qudits
             ),
             random_unitary,
         )
@@ -99,11 +99,11 @@ def test_specific_transformations_vectors(
     qudit_dim, num_qudits, qudit_representation, qubit_representation
 ):
     transformed_vector = qudit_state_transform.qudit_to_qubit_state(
-        qudit_dim, num_qudits, qudit_representation
+        qudit_representation, (qudit_dim,) * num_qudits
     )
     np.testing.assert_allclose(transformed_vector, qubit_representation)
     untransformed_vector = qudit_state_transform.qubit_to_qudit_state(
-        qudit_dim, num_qudits, transformed_vector
+        transformed_vector, (qudit_dim,) * num_qudits
     )
     np.testing.assert_allclose(untransformed_vector, qudit_representation)
 
@@ -159,10 +159,10 @@ def test_specific_transformations_unitaries(
     qudit_dim, num_qudits, qudit_representation, qubit_representation
 ):
     transformed_unitary = qudit_state_transform.qudit_to_qubit_unitary(
-        qudit_dim, num_qudits, qudit_representation
+        qudit_representation, (qudit_dim,) * num_qudits
     )
     np.testing.assert_allclose(transformed_unitary, qubit_representation)
     untransformed_unitary = qudit_state_transform.qubit_to_qudit_unitary(
-        qudit_dim, num_qudits, transformed_unitary
+        transformed_unitary, (qudit_dim,) * num_qudits
     )
     np.testing.assert_allclose(untransformed_unitary, qudit_representation)
