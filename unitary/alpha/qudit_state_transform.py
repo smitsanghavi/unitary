@@ -19,6 +19,14 @@ import numpy as np
 from typing import Tuple
 
 
+def num_bits(num: int) -> int:
+    """Returns the minimum number of bits needed to represent the input."""
+    result = 1
+    while num > 2**result:
+        result += 1
+    return result
+
+
 def _nearest_power_of_two_ceiling(qudit_dim: int) -> int:
     """Returns the smallest power of two greater than or equal to qudit_dim."""
     if qudit_dim == 0:
